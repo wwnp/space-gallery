@@ -1,6 +1,6 @@
 {
-    "name": "space-todos",
-    "homepage": "https://wwnp.github.io/space-todos",
+    "name": "spa-todos",
+    "homepage": "https://wwnp.github.io/spa-todos",
     "version": "0.0.0",
     "private": true,
     "scripts": {
@@ -10,6 +10,7 @@
         "deploy": "gh-pages -d dist"
     },
     "dependencies": {
+        "js-cookie": "^3.0.5",
         "tsparticles": "^2.10.1",
         "vue": "^3.3.4",
         "vue-router": "^4.2.2",
@@ -17,12 +18,14 @@
         "vue3-toastify": "^0.1.11"
     },
     "devDependencies": {
+        "@types/js-cookie": "^3.0.3",
         "@vitejs/plugin-vue": "^4.2.3",
         "autoprefixer": "^10.4.14",
         "dotenv": "^16.3.1",
         "gh-pages": "^5.0.0",
         "postcss": "^8.4.24",
         "tailwindcss": "^3.3.2",
-        "vite": "^4.3.9"
+        "vite": "^4.3.9",
+        "vue-next-masonry": "^1.1.3"
     }
 }

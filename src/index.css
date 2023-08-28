@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+img {
+    border: 1px solid #1c2738;
+}
+
 @font-face {
     font-family: 'MyFontName';
     src: url('./Orbitron.ttf') ; 
