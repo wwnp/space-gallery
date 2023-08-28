@@ -3,7 +3,7 @@ import App from './App.vue'
 import router from './router'
 import './index.css';
 import Particles from "vue3-particles";
-const app = createApp(App)
+import masonry from 'vue-next-masonry';
 
-app.use(router).use(Particles).mount('#app');
+createApp(App).use(router).use(masonry).use(Particles).mount('#app');
 
