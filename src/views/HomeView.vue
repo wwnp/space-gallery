@@ -83,7 +83,8 @@ import Loader from "../components/Loader.vue"
 import SuccessTick from "../components/SuccessTick.vue"
 import { toast } from "vue3-toastify"
 import Cookies from "js-cookie"
-const apiUrl = import.meta.env.VITE_API_URL
+// const apiUrl = import.meta.env.VITE_API_URL
+const apiUrl = "https://spacetodos.space/images/"
 
 export default {
   components: { Loader, CompleteBtn, SuccessTick },
