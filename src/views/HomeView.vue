@@ -260,7 +260,7 @@ export default {
         const jsoned = await data.json()
         this.todos = jsoned
       } catch (error) {
-        this.notify(error + " check your API", 5500)
+        this.notify(error + " .Possible solutions: check your API key , disable Adblock or use Incognito mode(Ctrl + Shift + N) ", 5500)
       }
     },
   },
