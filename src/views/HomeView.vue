@@ -1,6 +1,6 @@
 <template>
   <div class="container mx-auto bg-slate-900 min-h-screen h-full shadow shadow-black p-5 w-full md:w-11/12 z-50 relative opacity-95">
-    <h1 class="space-header text-center mb-6 text-xl font-extrabold leading-none tracking-tight text-gray-900 lg:text-3xl dark:text-white">Changed!</h1>
+    <h1 class="space-header text-center mb-6 text-xl font-extrabold leading-none tracking-tight text-gray-900 lg:text-3xl dark:text-white">Changed test request</h1>
     <h1 class="space-header text-center mb-6 text-xl font-extrabold leading-none tracking-tight text-gray-900 lg:text-3xl dark:text-white">Space Gallery</h1>
     <div v-if="this.apikey === null" class="mb-5 space-y-3">
       <label for="apiKey" class="text-white mr-3 text-xl">Type your api key please</label>
@@ -246,8 +246,28 @@ export default {
         this.notify(jsoned.message ?? jsoned.errors)
       }
     },
+    async isBlockedByClient() {
+      try {
+        const testRequest = await fetch(this.apiUrl, {
+          method: "GET",
+          headers: {
+            "X-API-KEY": this.apikey,
+          },
+        })
+
+        return !testRequest.ok
+      } catch {
+        return true
+      }
+    },
+
     async fetchTodos() {
       try {
+        if (await this.isBlockedByClient()) {
+          this.notify(error.message + "Please disable your adblocker to view the content.", 7000)
+          return
+        }
+
         const data = await fetch(apiUrl, {
           method: "GET",
           headers: {
@@ -261,12 +281,7 @@ export default {
         const jsoned = await data.json()
         this.todos = jsoned
       } catch (error) {
-        if (error.message.includes("net::ERR_BLOCKED_BY_CLIENT")) {
-          this.notify(error.message + "Please disable your adblocker to view the content.", 7000)
-        } else {
-          //   this.showModal = false // Hide the modal for other errors
-          this.notify(error.message, 5500)
-        }
+        this.notify(error.message, 5500)
       }
     },
   },
