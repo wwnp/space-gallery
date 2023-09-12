@@ -261,9 +261,12 @@ export default {
         const jsoned = await data.json()
         this.todos = jsoned
       } catch (error) {
-        console.log(error)
-        console.log(error.name)
-        this.notify(error + " .Possible solutions: check your API key , disable Adblock or use Incognito mode(Ctrl + Shift + N) ", 5500)
+        if (error.message.includes("net::ERR_BLOCKED_BY_CLIENT")) {
+          this.notify(error.message + "Please disable your adblocker to view the content.", 7000)
+        } else {
+          //   this.showModal = false // Hide the modal for other errors
+          this.notify(error.message, 5500)
+        }
       }
     },
   },
