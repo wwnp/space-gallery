@@ -1,5 +1,6 @@
 <template>
   <div class="container mx-auto bg-slate-900 min-h-screen h-full shadow shadow-black p-5 w-full md:w-11/12 z-50 relative opacity-95">
+    <h1 class="space-header text-center mb-6 text-xl font-extrabold leading-none tracking-tight text-gray-900 lg:text-3xl dark:text-white">Changed!</h1>
     <h1 class="space-header text-center mb-6 text-xl font-extrabold leading-none tracking-tight text-gray-900 lg:text-3xl dark:text-white">Space Gallery</h1>
     <div v-if="this.apikey === null" class="mb-5 space-y-3">
       <label for="apiKey" class="text-white mr-3 text-xl">Type your api key please</label>
@@ -260,6 +261,8 @@ export default {
         const jsoned = await data.json()
         this.todos = jsoned
       } catch (error) {
+        console.log(error)
+        console.log(error.name)
         this.notify(error + " .Possible solutions: check your API key , disable Adblock or use Incognito mode(Ctrl + Shift + N) ", 5500)
       }
     },
