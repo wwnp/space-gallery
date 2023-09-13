@@ -1,6 +1,5 @@
 <template>
   <div class="container mx-auto bg-slate-900 min-h-screen h-full shadow shadow-black p-5 w-full md:w-11/12 z-50 relative opacity-95">
-    <h1 class="space-header text-center mb-6 text-xl font-extrabold leading-none tracking-tight text-gray-900 lg:text-3xl dark:text-white">Changed test request</h1>
     <h1 class="space-header text-center mb-6 text-xl font-extrabold leading-none tracking-tight text-gray-900 lg:text-3xl dark:text-white">Space Gallery</h1>
     <div v-if="this.apikey === null" class="mb-5 space-y-3">
       <label for="apiKey" class="text-white mr-3 text-xl">Type your api key please</label>
@@ -22,14 +21,14 @@
       <div class="flex items-center justify-between mb-4 flex-wrap space-y-2">
         <div class="w-full">
           <label for="titleTodo" class="text-white">Title</label>
-          <input type="text" placeholder="Suggest something cool" v-model="cImage.title" class="p-2 border border-gray-400 rounded w-full" />
+          <input type="text" placeholder="Suggest something cool" v-model="cImage.title" class="p-2 border border-gray-400 rounded block min-w-0 w-full max-w-sm" />
         </div>
         <div>
           <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file_input">Upload file</label>
           <input
             @change="handleFileChange"
             ref="fileInput"
-            class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-500 focus:outline-none dark:bg-gray-200 dark:border-gray-600 dark:placeholder-gray-700"
+            class="block min-w-0 w-full max-w-sm text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-500 focus:outline-none dark:bg-gray-200 dark:border-gray-600 dark:placeholder-gray-700"
             aria-describedby="file_input_help"
             id="file_input"
             type="file"
@@ -84,8 +83,7 @@ import Loader from "../components/Loader.vue"
 import SuccessTick from "../components/SuccessTick.vue"
 import { toast } from "vue3-toastify"
 import Cookies from "js-cookie"
-// const apiUrl = import.meta.env.VITE_API_URL
-const apiUrl = "https://spacetodos.space/images/"
+const apiUrl = import.meta.env.VITE_API_URL
 
 export default {
   components: { Loader, CompleteBtn, SuccessTick },
@@ -173,6 +171,22 @@ export default {
     },
     validateForm() {
       const errors = []
+
+      if (this.cImage.image !== null) {
+        const imageType = this.cImage.image.type.split("/")[1]
+        const imageSize = this.cImage.image.size
+        console.log(imageSize)
+        console.log(imageType)
+        if (imageType !== "png" && imageType !== "jpeg") {
+          errors.push("Image type should be:  png or jpg")
+        }
+        if (imageSize > 1024000) {
+          errors.push("Image size should be less than 1 MB")
+        }
+      } else {
+        errors.push("Add image please")
+      }
+
       if (this.cImage.title.length === 0) {
         errors.push("Image title is required.")
       }
@@ -246,28 +260,9 @@ export default {
         this.notify(jsoned.message ?? jsoned.errors)
       }
     },
-    async isBlockedByClient() {
-      try {
-        const testRequest = await fetch(this.apiUrl, {
-          method: "GET",
-          headers: {
-            "X-API-KEY": this.apikey,
-          },
-        })
-
-        return !testRequest.ok
-      } catch {
-        return true
-      }
-    },
 
     async fetchTodos() {
       try {
-        if (await this.isBlockedByClient()) {
-          this.notify(error.message + "Please disable your adblocker to view the content.", 7000)
-          return
-        }
-
         const data = await fetch(apiUrl, {
           method: "GET",
           headers: {
@@ -281,7 +276,7 @@ export default {
         const jsoned = await data.json()
         this.todos = jsoned
       } catch (error) {
-        this.notify(error.message, 5500)
+        this.notify("Something went wrong, please try later 😿", 5500)
       }
     },
   },
