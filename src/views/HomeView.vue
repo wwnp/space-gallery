@@ -129,7 +129,7 @@ export default {
     },
     addCookieBtnHandler(value) {
       const apiKeyInput = document.querySelector("#apiKeyInput")
-      const val = apiKeyInput.value
+      const val = apiKeyInput.value.trim()
       if (val.length !== 32) {
         this.notify("Invalid api key")
         return
