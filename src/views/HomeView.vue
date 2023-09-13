@@ -51,14 +51,17 @@
       <div v-if="firstVisit && loading" class="flex justify-center">
         <Loader></Loader>
       </div>
+      <div v-else-if="this.images.length === 0">
+        <h2 class="text-center mb-6 font-extrabold leading-none tracking-tight text-gray-900 text-base lg:text-3xl dark:text-white">Nothing yet 😿</h2>
+      </div>
       <div v-else>
         <masonry :cols="{ default: 5, 1000: 4, 700: 3, 400: 1 }" :gutter="{ default: '0', 700: '0' }">
-          <div v-for="(item, index) in this.todos" :key="index">
+          <div v-for="(item, index) in this.images" :key="index">
             <div class="relative group">
               <img :src="item.url" :alt="item.title" />
               <div class="hidden group-hover:block absolute top-0 h-100 justify-end h-full w-full hover:bg-slate-900 hover:bg-opacity-40 transition-all">
                 <div class="flex flex-col justify-end items-center h-full w-full p-5">
-                  <p class="text-white mb-2">{{ item.title }}</p>
+                  <p class="text-white mb-2 text-xs">{{ trimAndDotted(item.title) }}</p>
                   <button
                     @click="deleteBtnHandler(item.id)"
                     type="button"
@@ -78,19 +81,17 @@
 </template>
 <script>
 import dirtyWordsJSON from "../assets/dirtywords.json"
-import CompleteBtn from "../components/CompleteBtn.vue"
 import Loader from "../components/Loader.vue"
-import SuccessTick from "../components/SuccessTick.vue"
 import { toast } from "vue3-toastify"
 import Cookies from "js-cookie"
 const apiUrl = import.meta.env.VITE_API_URL
 
 export default {
-  components: { Loader, CompleteBtn, SuccessTick },
+  components: { Loader },
   data() {
     return {
       apikey: Cookies.get("apikey") ?? null,
-      todos: [],
+      images: [],
       loading: false,
       firstVisit: true,
       cImage: {
@@ -111,16 +112,18 @@ export default {
     return { notify }
   },
   mounted() {
-    console.log("UNDERSTANDING GIT FLOW")
     if (this.apikey !== null) {
       if (this.validateApiKey) {
-        this.fetchTodosBtnHandler()
+        this.fetchImagesBtnHandler()
       } else {
         this.notify("Invalid Api key")
       }
     }
   },
   methods: {
+    trimAndDotted(title) {
+      return title.length >= 20 ? title.substring(0, 20) + "..." : title
+    },
     clearFileInput() {
       this.$refs.fileInput.value = ""
       this.cImage.image = null
@@ -130,7 +133,6 @@ export default {
     },
     addCookieBtnHandler(value) {
       const apiKeyInput = document.querySelector("#apiKeyInput")
-      console.log(123)
       const val = apiKeyInput.value.trim()
       if (val.length !== 32) {
         this.notify("Invalid api key")
@@ -139,7 +141,7 @@ export default {
       Cookies.set("apikey", val)
       this.apikey = val
 
-      this.fetchTodosBtnHandler()
+      this.fetchImagesBtnHandler()
     },
     removeCookieBtnHandler() {
       this.apikey = null
@@ -158,7 +160,7 @@ export default {
         },
       })
       const jsoned = await data.json()
-      this.fetchTodos()
+      this.fetchImages()
       this.loading = false
       this.notify(jsoned.message ?? jsoned.errors)
     },
@@ -177,8 +179,6 @@ export default {
       if (this.cImage.image !== null) {
         const imageType = this.cImage.image.type.split("/")[1]
         const imageSize = this.cImage.image.size
-        console.log(imageSize)
-        console.log(imageType)
         if (imageType !== "png" && imageType !== "jpeg") {
           errors.push("Image type should be:  png or jpg")
         }
@@ -204,7 +204,7 @@ export default {
 
       return true
     },
-    async fetchTodosBtnHandler() {
+    async fetchImagesBtnHandler() {
       this.loading = true
       await new Promise((resolve, reject) => {
         setTimeout(() => {
@@ -215,7 +215,7 @@ export default {
         this.firstVisit = false
       }
       try {
-        this.fetchTodos()
+        this.fetchImages()
       } catch (error) {}
       this.loading = false
     },
@@ -228,7 +228,7 @@ export default {
         },
       })
       const jsoned = await data.json()
-      this.fetchTodos()
+      this.fetchImages()
       this.loading = false
       this.notify(jsoned.message ?? jsoned.errors)
     },
@@ -253,7 +253,7 @@ export default {
           body: fD,
         })
         const jsoned = await data.json()
-        this.fetchTodos()
+        this.fetchImages()
 
         this.clearFileInput()
         this.cImage.title = ""
@@ -263,7 +263,7 @@ export default {
       }
     },
 
-    async fetchTodos() {
+    async fetchImages() {
       try {
         const data = await fetch(apiUrl, {
           method: "GET",
@@ -271,14 +271,23 @@ export default {
             "X-API-KEY": this.apikey,
           },
         })
+
         if (!data.ok) {
-          throw new Error(`Request failed with status ${data.status}`)
+          const statusCode = data.status
+          switch (statusCode) {
+            case 401:
+              throw new Error(`Invalid API`)
+              break
+            default:
+              throw new Error(`Request failed with status ${data.status}`)
+              break
+          }
         }
 
         const jsoned = await data.json()
-        this.todos = jsoned
+        this.images = jsoned
       } catch (error) {
-        this.notify("Something went wrong, please try later 😿", 5500)
+        this.notify(error.message, 5500)
       }
     },
   },
