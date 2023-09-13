@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 
 const router = createRouter({
-    base: '/space-todos',
+    base: '/space-gallery',
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
         {

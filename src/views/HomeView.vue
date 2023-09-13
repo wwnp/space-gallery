@@ -1,11 +1,11 @@
 <template>
   <div class="container mx-auto bg-slate-900 min-h-screen h-full shadow shadow-black p-5 w-full md:w-11/12 z-50 relative opacity-95">
-    <h1 class="space-header text-center mb-6 text-xl font-extrabold leading-none tracking-tight text-gray-900 lg:text-3xl dark:text-white">Space Gallery</h1>
+    <h1 class="space-header text-center mb-6 font-extrabold leading-none tracking-tight text-gray-900 text-base lg:text-3xl dark:text-white">Space Gallery</h1>
     <div v-if="this.apikey === null" class="mb-5 space-y-3">
-      <label for="apiKey" class="text-white mr-3 text-xl">Type your api key please</label>
-      <input type="text" class="w-[500px] px-2 py-1 rounded-md border focus:outline-none focus:ring focus:border-blue-300 transition duration-300" id="apiKeyInput" />
-      <button class="bg-green-900 ml-3 hover:bg-green-700 text-white font-bold py-1 px-2 rounded text-sm" @click="addCookieBtnHandler">Attach your api key</button>
-      <p class="text-gray-500 text-base italic">
+      <label for="apiKey" class="text-white mr-0 sm:mr-3 text-base sm:text-xl">Type your api key please</label>
+      <input type="text" class="min-w-0 w-full max-w-sm px-2 py-1 rounded-md border focus:outline-none focus:ring focus:border-blue-300 transition duration-300" id="apiKeyInput" />
+      <button class="bg-green-900 ml-3 hover:bg-green-700 text-white font-bold px-0 py-1 sm:px-2 rounded text-xs sm:text-sm" @click="addCookieBtnHandler">Attach your api key</button>
+      <p class="text-gray-500 text-base italic break-all">
         If you don't have one, please send email to <a class="text-blue-500" href="mailto:serhio.gilev@gmail.com">serhio.gilev@gmail.com</a> or telegram:
         <a href="https://t.me/wwnp0" class="text-blue-500">https://t.me/wwnp0</a>
       </p>
