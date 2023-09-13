@@ -111,6 +111,7 @@ export default {
     return { notify }
   },
   mounted() {
+    console.log("UNDERSTANDING GIT FLOW")
     if (this.apikey !== null) {
       if (this.validateApiKey) {
         this.fetchTodosBtnHandler()
@@ -129,6 +130,7 @@ export default {
     },
     addCookieBtnHandler(value) {
       const apiKeyInput = document.querySelector("#apiKeyInput")
+      console.log(123)
       const val = apiKeyInput.value.trim()
       if (val.length !== 32) {
         this.notify("Invalid api key")
