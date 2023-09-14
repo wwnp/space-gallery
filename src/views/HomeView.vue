@@ -16,7 +16,6 @@
         <button @click="removeCookieBtnHandler" class="bg-red-800 hover:bg-red-900 text-white font-bold py-1 px-2 rounded text-xs">Remove Api Key</button>
       </div>
     </div>
-
     <div v-if="this.apikey">
       <div class="flex items-center justify-between mb-4 flex-wrap space-y-2">
         <div class="w-full">
@@ -51,30 +50,32 @@
       <div v-if="firstVisit && loading" class="flex justify-center">
         <Loader></Loader>
       </div>
-      <div v-else-if="this.images.length === 0">
-        <h2 class="text-center mb-6 font-extrabold leading-none tracking-tight text-gray-900 text-base lg:text-3xl dark:text-white">Nothing yet 😿</h2>
-      </div>
       <div v-else>
-        <masonry :cols="{ default: 5, 1000: 4, 700: 3, 400: 1 }" :gutter="{ default: '0', 700: '0' }">
-          <div v-for="(item, index) in this.images" :key="index">
-            <div class="relative group">
-              <img :src="item.url" :alt="item.title" />
-              <div class="hidden group-hover:block absolute top-0 h-100 justify-end h-full w-full hover:bg-slate-900 hover:bg-opacity-40 transition-all">
-                <div class="flex flex-col justify-end items-center h-full w-full p-5">
-                  <p class="text-white mb-2 text-xs">{{ trimAndDotted(item.title) }}</p>
-                  <button
-                    @click="deleteBtnHandler(item.id)"
-                    type="button"
-                    class="text-white bg-gradient-to-r from-red-500 via-red-600 to-red-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-xs px-2 py-1 text-center"
-                    :class="{ 'opacity-50 cursor-not-allowed': loading }"
-                  >
-                    Delete
-                  </button>
+        <template v-if="!loading && this.images.length === 0">
+          <h2 class="text-center mb-6 font-extrabold leading-none tracking-tight text-gray-900 text-base lg:text-3xl dark:text-white">Nothing yet 😿</h2>
+        </template>
+        <template v-else>
+          <masonry :cols="{ default: 5, 1000: 4, 700: 3, 400: 1 }" :gutter="{ default: '0', 700: '0' }">
+            <div v-for="(item, index) in this.images" :key="index">
+              <div class="relative group">
+                <img :src="item.url" :alt="item.title" />
+                <div class="hidden group-hover:block absolute top-0 h-100 justify-end h-full w-full hover:bg-slate-900 hover:bg-opacity-40 transition-all">
+                  <div class="flex flex-col justify-end items-center h-full w-full p-5">
+                    <p class="text-white mb-2 text-xs">{{ trimAndDotted(item.title) }}</p>
+                    <button
+                      @click="deleteBtnHandler(item.id)"
+                      type="button"
+                      class="text-white bg-gradient-to-r from-red-500 via-red-600 to-red-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-xs px-2 py-1 text-center"
+                      :class="{ 'opacity-50 cursor-not-allowed': loading }"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </masonry>
+          </masonry>
+        </template>
       </div>
     </div>
   </div>
@@ -93,6 +94,7 @@ export default {
       apikey: Cookies.get("apikey") ?? null,
       images: [],
       loading: false,
+      loaded: false,
       firstVisit: true,
       cImage: {
         title: "",
@@ -215,7 +217,7 @@ export default {
         this.firstVisit = false
       }
       try {
-        this.fetchImages()
+        await this.fetchImages()
       } catch (error) {}
       this.loading = false
     },
